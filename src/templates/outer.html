@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  {% block header %}
+    <head>
+      <meta charset="UTF-8">
+
+      {% block includes %}
+      {% endblock %}
+
+      {% block title %}
+        <title>Power of Ni</title>
+      {% endblock %}
+
+    </head>
+  {% endblock %}
+
+  <body>
+    {% block main %}
+    {% endblock %}
+  </body>
+
+  {% block footer_includes %}
+  {% endblock %}
+</html>
