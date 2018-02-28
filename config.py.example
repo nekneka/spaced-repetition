@@ -1,5 +1,0 @@
-# can generate secret key, for example, like this:
-#  > openssl rand -base64 32
-flask = dict(
-    secret_key='change_me'
-)

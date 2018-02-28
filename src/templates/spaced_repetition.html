@@ -1,0 +1,24 @@
+{% extends "outer.html" %}
+
+{% block main %}
+
+  <h1>Repetition is the key.</h1>
+
+    <h2>List of things to repeat today</h2>
+
+    {% if not items %}
+        <div>It seems there's nothing to repeat today...</div>
+    {% else %}
+        <ul class="items">
+        {% for item in items %}
+          {% set item = item.logs[0] %}
+          <li class="item">
+            <span>{{ item.description }}</span>
+            <b>{{ item.tags }}</b>
+            <span>(added {{item.addedDaysAgo}} days ago)</span>
+          </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
+{% endblock %}

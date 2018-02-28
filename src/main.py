@@ -1,16 +1,17 @@
 import os
 from flask import Flask, render_template
-
-import config
+from flask_pymongo import PyMongo
 
 app = Flask(__name__,
             static_url_path='/static')
-app.config['SECRET_KEY'] = config.flask['secret_key']
+app.config.from_pyfile('config.py')
+mongo = PyMongo(app)
 
 
 @app.route('/')
 def root():
-    return render_template('example.html', param='Flask')
+    items = mongo.db.items.find()
+    return render_template('spaced_repetition.html', items=items)
 
 
 if __name__ == '__main__':
