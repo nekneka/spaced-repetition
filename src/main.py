@@ -1,6 +1,7 @@
 import os
 
 from datetime import date, timedelta
+
 from flask import Flask, render_template, request, url_for
 from flask_pymongo import PyMongo
 from werkzeug.utils import redirect
@@ -8,6 +9,9 @@ from werkzeug.utils import redirect
 
 app = Flask(__name__,
             static_url_path='/static')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', None)
+app.config['MONGO_DBNAME'] = os.environ.get('MONGO_DBNAME', None)
+app.config['MONGO_URI'] = os.environ.get('MONGO_URI', None)
 app.config.from_pyfile('config.py', silent=True)
 mongo = PyMongo(app)
 
