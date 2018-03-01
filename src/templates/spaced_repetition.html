@@ -4,18 +4,25 @@
 
   <h1>Repetition is the key.</h1>
 
+    <h2>Add what you've learned today</h2>
+
+    <form action="/" method="POST">
+      <input type="text" placeholder="description" name="description">
+      <input type="text" placeholder="tags" name="tags">
+      <button type="submit">Submit</button>
+    </form>
+
     <h2>List of things to repeat today</h2>
 
-    {% if not items %}
+    {% if not result %}
         <div>It seems there's nothing to repeat today...</div>
     {% else %}
         <ul class="items">
-        {% for item in items %}
-          {% set item = item.logs[0] %}
+        {% for item in result['items'] %}
           <li class="item">
             <span>{{ item.description }}</span>
             <b>{{ item.tags }}</b>
-            <span>(added {{item.addedDaysAgo}} days ago)</span>
+            <span>(added {{item.added_days_ago}} days ago)</span>
           </li>
         {% endfor %}
         </ul>
