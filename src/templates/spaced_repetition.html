@@ -12,13 +12,28 @@
       <button type="submit">Submit</button>
     </form>
 
+    <h2>Today I've learned</h2>
+
+    {% if not result['today'] %}
+        <div>Should learn something new!</div>
+    {% else %}
+        <ul class="items">
+        {% for item in result['today'] %}
+          <li class="item">
+            <span>{{ item.description }}</span>
+            <b>{{ item.tags }}</b>
+          </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+
     <h2>List of things to repeat today</h2>
 
-    {% if not result %}
+    {% if not result['before'] %}
         <div>It seems there's nothing to repeat today...</div>
     {% else %}
         <ul class="items">
-        {% for item in result['items'] %}
+        {% for item in result['before'] %}
           <li class="item">
             <span>{{ item.description }}</span>
             <b>{{ item.tags }}</b>

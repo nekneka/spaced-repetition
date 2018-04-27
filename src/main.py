@@ -1,10 +1,9 @@
 import os
 
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
-from flask import Flask, render_template, request, url_for
+from flask import Flask, render_template, request, url_for, redirect
 from flask_pymongo import PyMongo
-from werkzeug.utils import redirect
 
 
 app = Flask(__name__,
@@ -22,13 +21,28 @@ def add_days(days):
     return (date.today() + timedelta(days=days)).isoformat()
 
 
+def process_repeats(db_result):
+    if db_result is None:
+        return {'today': [], 'before': []}
+
+    db_result = db_result['items']
+
+    added_today = list(filter(lambda x: x['added_days_ago'] == 0, db_result))
+    added_today.sort(key=lambda x: x['added_timestamp'])
+
+    added_before = list(filter(lambda x: x['added_days_ago'] != 0, db_result))
+    added_before.sort(key=lambda x: x['added_timestamp'])
+
+    return {'today': added_today, 'before': added_before}
+
+
 @app.route('/', methods=['GET', 'POST'])
 def root():
     if request.method == 'POST':
         item = request.form.to_dict(flat=True)
-
         for interval in DAY_REPEATS:
             item["added_days_ago"] = interval
+            item["added_timestamp"] = datetime.today()
             mongo.db.repeats.update(
                 {'date': add_days(interval)},
                 {'$push': {'items': item}},
@@ -40,7 +54,8 @@ def root():
         db_result = mongo.db.repeats.find_one(
             {'date': date.today().isoformat()}
         )
-        return render_template('spaced_repetition.html', result=db_result)
+
+        return render_template('spaced_repetition.html', result=process_repeats(db_result))
 
 
 if __name__ == '__main__':
