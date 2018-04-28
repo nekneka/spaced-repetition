@@ -7,9 +7,7 @@ function changeDoneStatus(checkboxElem) {
     item.classList.remove('striked');
   }
 
-  let ul_parent = item.parentNode;
-
-  let data = JSON.stringify({added_timestamp: checkboxElem.id, done: checkboxElem.checked, parent_id: ul_parent.id});
+  let data = JSON.stringify({added_timestamp: checkboxElem.id, done: checkboxElem.checked, parent_id: item.id});
 
   fetch("/api/item_done_change", {
     method: "POST",

@@ -1,5 +1,0 @@
-# can generate secret key, for example, like this:
-#  > openssl rand -base64 32
-SECRET_KEY = 'Q0Lmv2DGI8UCbLyWuR2GXyxDQmGSMX6U/NfB4gih+Xo='
-MONGO_DBNAME = 'spaced_repetition'
-MONGO_URI = 'mongodb://localhost:27017/spaced_repetition'
