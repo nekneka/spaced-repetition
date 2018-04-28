@@ -1,4 +1,8 @@
 {% extends "outer.html" %}
+{% block includes %}
+  <script type="text/javascript" src="spare_helper.js"></script>
+  <link rel="stylesheet" href="spare_styles.css">
+{% endblock %}
 
 {% block main %}
 
@@ -12,7 +16,7 @@
       <button type="submit">Submit</button>
     </form>
 
-    <h2>Today I've learned</h2>
+    <h2>Learned Today</h2>
 
     {% if not result['today'] %}
         <div>Should learn something new!</div>
@@ -27,17 +31,19 @@
         </ul>
     {% endif %}
 
-    <h2>List of things to repeat today</h2>
+    <h2>Things to Repeat Today</h2>
 
     {% if not result['before'] %}
-        <div>It seems there's nothing to repeat today...</div>
+        <div>It seems there's nothing to repeat today... ^__^</div>
     {% else %}
-        <ul class="items">
+        <ul id="{{result.id}}" class="items">
         {% for item in result['before'] %}
-          <li class="item">
+          <li class="item {{'striked' if item.done }}">
             <span>{{ item.description }}</span>
             <b>{{ item.tags }}</b>
             <span>(added {{item.added_days_ago}} days ago)</span>
+            <input type="checkbox" id="{{item.added_timestamp}}"  onchange="changeDoneStatus(this)" />
+
           </li>
         {% endfor %}
         </ul>
