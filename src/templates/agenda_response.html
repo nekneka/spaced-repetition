@@ -1,0 +1,26 @@
+{% if not items %}
+   <div>Nothing to repeat for given dates!</div>
+
+{% else %}
+  <h3 id="agenda_items">Things to repeat
+    {% if isRange %}
+      from {{dates[0]}} to {{dates[1]}}
+    {% else %}
+      on {{dates[0]}}
+    {% endif %}
+  </h3>
+  <ul class="items">
+    {% for item in items %}
+      <li id="agenda_{{item.id}}" class="item {{'striked' if item.done }}">
+        <span>{{ item.repeat_item.description }}</span>
+        <b>{{ item.repeat_item.tags }}</b>
+        <span>(added {{item.added_days_ago}} days ago)</span>
+        <input type="checkbox"
+               id="a_{{item.repeat_item.date_created}}"
+               onchange="changeDoneStatus(this)"
+               {% if item.done %} checked {% endif %} />
+
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

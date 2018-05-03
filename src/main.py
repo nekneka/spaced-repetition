@@ -3,6 +3,7 @@ from datetime import date, timedelta, datetime
 import json
 
 from flask import Flask, render_template, request, url_for, redirect
+from sqlalchemy.sql.elements import not_
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import BigInteger
@@ -34,8 +35,9 @@ class RepeatItem(db.Model):
         self.description = description
         self.tags = tags
 
+    # not used, to return repr(db_results_list)
     def __repr__(self):
-        return '<Repeat Item info %r>' % self.repeat_item_id
+        return json.dumps({'description': self.description})
 
 
 class DateRepeatItemLink(db.Model):
@@ -52,10 +54,12 @@ class DateRepeatItemLink(db.Model):
         self.date_to_repeat = date_to_repeat
         self.repeat_item_id = repeat_item_id
         self.added_days_ago = added_days_ago
-        self.done = False
+        self.done = False if added_days_ago != 0 else True
 
+    # not used, to return repr(db_results_list)
     def __repr__(self):
-        return '<Date info %r>' % self.repeat_item_id
+        return json.dumps({'date_to_repeat': self.date_to_repeat.isoformat(),
+                           'repeat_item': json.loads(repr(self.repeat_item))})
 
 
 DAY_REPEATS = [0, 1, 8, 16, 35, 70]
@@ -96,6 +100,34 @@ def root():
         db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
 
         return render_template('spaced_repetition.html', result=process_repeats(db_result))
+
+
+@app.route('/agenda', methods=['POST'])
+def get_agenda():
+
+    agenda_dates = request.form
+    # TODO: check that not too much, pagination?
+    # TODO: check arguments
+    # TODO: error handling
+    # TODO: filter added_days_ago==0
+    if agenda_dates['agenda_end_date_input']:
+        items_to_repeat = DateRepeatItemLink.query\
+            .filter(
+                DateRepeatItemLink.date_to_repeat >= agenda_dates['agenda_start_date_input'],
+                DateRepeatItemLink.date_to_repeat <= agenda_dates['agenda_end_date_input'], \
+                not_(DateRepeatItemLink.added_days_ago == 0))\
+            .all()
+    else:
+        items_to_repeat = DateRepeatItemLink.query\
+            .filter(
+                DateRepeatItemLink.date_to_repeat == agenda_dates['agenda_start_date_input'], \
+                not_(DateRepeatItemLink.added_days_ago == 0))\
+            .all()
+
+    return render_template('agenda_response.html',
+                           items=items_to_repeat,
+                           isRange=agenda_dates['agenda_end_date_input'],
+                           dates=[agenda_dates['agenda_start_date_input'], agenda_dates['agenda_end_date_input']])
 
 
 @app.route('/api/item_done_change', methods=['POST'])

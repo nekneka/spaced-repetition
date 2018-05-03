@@ -1,24 +1,21 @@
 {% extends "outer.html" %}
-{% block includes %}
-  <script type="text/javascript" src="spare_helper.js"></script>
-  <link rel="stylesheet" href="spare_styles.css">
-{% endblock %}
 
 {% block main %}
 
   <h1>Repetition is the key.</h1>
 
-<!--add what was learned block-->
+
+<!--add what was learned-->
     <h2>Add what you've learned today</h2>
 
     <form action="/" method="POST">
-      <input type="text" placeholder="description" name="description">
+      <input type="text" placeholder="description" name="description" required>
       <input type="text" placeholder="tags" name="tags">
       <button type="submit">Submit</button>
     </form>
 
 
-<!--list learned today block-->
+<!--list learned today-->
     <h2>Learned Today</h2>
 
     {% if not result['today'] %}
@@ -34,7 +31,8 @@
         </ul>
     {% endif %}
 
-<!--list to repeat today block-->
+
+<!--list to repeat today-->
     <h2>Things to Repeat Today</h2>
 
     {% if not result['before'] %}
@@ -42,16 +40,58 @@
     {% else %}
         <ul class="items">
         {% for item in result['before'] %}
-          <li id="{{item.id}}" class="item {{'striked' if item.done }}">
+          <li id="t_{{item.id}}" class="item {{'striked' if item.done }}">
             <span>{{ item.repeat_item.description }}</span>
             <b>{{ item.repeat_item.tags }}</b>
             <span>(added {{item.added_days_ago}} days ago)</span>
-            <input type="checkbox" id="{{item.added_timestamp}}"  onchange="changeDoneStatus(this)" {% if item.done %} checked {% endif %} />
+            <input type="checkbox"
+                   id="t_{{item.repeat_item.date_created}}"
+                   onchange="changeDoneStatus(this)"
+                   {% if item.done %} checked {% endif %} />
 
           </li>
         {% endfor %}
         </ul>
     {% endif %}
-<!--end of to repeat today block-->
 
+
+<!--show agenda for specific day-->
+    <h2>Agenda</h2>
+    <h3>Show things you should have repeated on particular day(s)</h3>
+
+      <form id="agenda_form" method="POST">
+
+        <div>
+          <label id="agenda_start_date_input_label" for="agenda_start_date_input">Show things to repeat on </label>
+          <input type="date" id="agenda_start_date_input" name="agenda_start_date_input" min="2018-04-01" max="2018-08-20" required>
+
+          <span id="agenda_end_date_block" hidden>
+            <label for="agenda_end_date_input"> to </label>
+            <input type="date" id="agenda_end_date_input" name="agenda_end_date_input" min="2018-04-01" max="2018-08-20">
+            <span class="validity"></span>
+          </span>
+        </div>
+
+        <div>
+          <input type="checkbox"
+                 id="agenda_is_dates_range"
+                 onchange="changeIsAgendaDatesRange(this)" />
+          <label for="agenda_is_dates_range">See agenda for all dates in range</label>
+        </div>
+
+        <div>
+          <button type="submit">Submit</button>
+        </div>
+
+      </form>
+
+    <div id="agenda_response_container">
+
+    </div>
+
+{% endblock %}
+
+{% block footer_includes %}
+  <script type="text/javascript" src="spare_helper.js"></script>
+  <link rel="stylesheet" href="spare_styles.css">
 {% endblock %}
