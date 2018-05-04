@@ -1,3 +1,29 @@
+// add new item processing
+let new_item_form = document.getElementById("new_item_form");
+let to_repeat_container = document.getElementById("to_repeat_container");
+
+new_item_form.addEventListener('submit', function(ev) {
+  let data = new FormData(new_item_form);
+  let request = new XMLHttpRequest();
+
+  request.open("POST", "/", true);
+
+  request.onload = function(oEvent) {
+    if (request.status == 200) {
+      let li_node = document.createElement("li");
+      li_node.innerHTML = request.response;
+      to_repeat_container.appendChild(li_node);
+    } else {
+      console.log("Error!");
+    }
+  };
+
+  request.send(data);
+  ev.preventDefault();
+}, false);
+
+
+// done checkboxes processing
 function changeDoneStatus(checkboxElem) {
   let item = checkboxElem.parentNode;
 
@@ -26,6 +52,8 @@ function changeDoneStatus(checkboxElem) {
   });
 }
 
+
+// checkbox see agenda for range of dates processing
 function changeIsAgendaDatesRange(checkboxIsRange) {
   let end_date_elem = document.getElementById("agenda_end_date_block");
   let start_date_label_elem = document.getElementById("agenda_start_date_input_label");
@@ -40,6 +68,9 @@ function changeIsAgendaDatesRange(checkboxIsRange) {
 
 }
 
+
+// agenda request processing
+// TODO: this smells
 let agenda_submit = document.getElementById("agenda_form");
 let agenda_response_container = document.getElementById("agenda_response_container");
 

@@ -8,7 +8,7 @@
 <!--add what was learned-->
     <h2>Add what you've learned today</h2>
 
-    <form action="/" method="POST">
+    <form id="new_item_form" method="POST">
       <input type="text" placeholder="description" name="description" required>
       <input type="text" placeholder="tags" name="tags">
       <button type="submit">Submit</button>
@@ -21,12 +21,9 @@
     {% if not result['today'] %}
         <div>Should learn something new!</div>
     {% else %}
-        <ul class="items">
+        <ul id="to_repeat_container" class="items">
         {% for item in result['today'] %}
-          <li class="item">
-            <span>{{ item.repeat_item.description }}</span>
-            <b>{{ item.repeat_item.tags }}</b>
-          </li>
+          {% include 'added_today_item.html' %}
         {% endfor %}
         </ul>
     {% endif %}

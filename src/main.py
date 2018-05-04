@@ -27,7 +27,7 @@ class RepeatItem(db.Model):
     id = db.Column(BigInteger, primary_key=True)
     date_created = db.Column(db.DateTime, unique=False, nullable=False)
     description = db.Column(db.String, unique=False, nullable=False)
-    # move to separate table
+    # TODO: move to separate table
     tags = db.Column(db.String, unique=False, nullable=True)
 
     def __init__(self, date_created, description, tags):
@@ -94,7 +94,8 @@ def root():
             dateItemLink = DateRepeatItemLink(add_days(interval), repeat_item.id, interval)
             db.session.add(dateItemLink)
         db.session.commit()
-        return redirect(url_for('root'))
+        return render_template('added_today_item.html',
+                               item={'repeat_item' : repeat_item})
 
     else:
         db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
