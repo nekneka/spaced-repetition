@@ -1,3 +1,95 @@
 .striked {
     text-decoration: line-through;
 }
+
+/* background img */
+body {
+    /* The image used */
+    background-image: url("/space.jpg");
+    overflow-x: hidden;
+    height: 100%;
+
+    /* Center and scale the image nicely */
+    background-position: center;
+    background-repeat: repeat;
+    background-size: cover;
+}
+
+/* grid */
+.grid-container {
+    display: grid;
+    grid-template-columns: [space-left-column] auto [add-column] 500px [repeat-column] 500px [space-right-column] auto;
+    grid-template-rows: [header-row] 50px [main-row] auto; /* [search-row] auto */
+
+    grid-column-gap: 20px;
+    /* grid-row-gap: 15px; */
+}
+
+.grid-item-header{
+    grid-column: add-column / span 2;
+    grid-row: 1 / span 1;
+    justify-self: center;
+}
+
+.grid-item-settings {
+    grid-column: repeat-column / span 1;
+    grid-row: 1 / span 1;
+    justify-self: end;
+    align-self: center;
+}
+
+.grid-item-add {
+    grid-column: add-column / span 1;
+    grid-row: main-row / span 1;
+}
+
+.grid-item-repeat {
+    grid-column: repeat-column / span 1;
+    grid-row: main-row / span 1;
+}
+
+/*.grid-item-agenda {
+    grid-column: repeat-column / span 1;
+    grid-row: search-row / span 1;
+}
+*/
+
+/* background, paddings and text colors */
+
+.card-background {
+    background-color: #FFFFFF;
+    box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.5);
+}
+
+.grid-item-add {
+    max-height: max-content;
+}
+
+.grid-item-repeat {
+    max-height: 90vh;
+    overflow-y: scroll;
+}
+
+.white-header {
+    color: white;
+    font-size: 2em;
+    margin: 0 0 15px 0;
+    font-weight: bold;
+}
+
+.main-header {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.padded {
+    padding: 15px;
+}
+
+.left-padded {
+    padding-left: 20px;
+}
+
+.items {
+    margin: 0;
+}

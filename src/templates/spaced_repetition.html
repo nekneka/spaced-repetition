@@ -2,24 +2,33 @@
 
 {% block main %}
 
-  <h1>Repetition is the key.</h1>
+<div class="grid-container">
 
+  <div class="grid-item-header white-header">
+      Repetition is the key.
+  </div>
 
-<!--add what was learned-->
-    <h2>Add what you've learned today</h2>
+  <button class="grid-item-settings">
+    Settings
+  </button>
 
-    <form id="new_item_form" method="POST">
+  <!--add what was learned-->
+  <div class="grid-item-add">
+    <div class="card-background">
+    <div class="main-header padded">Add what you've learned today</div>
+
+    <form class="left-padded" id="new_item_form" method="POST">
       <input type="text" placeholder="description" name="description" required>
       <input type="text" placeholder="tags" name="tags">
       <button type="submit">Submit</button>
     </form>
 
 
-<!--list learned today-->
-    <h2>Learned Today</h2>
+   <!--list learned today-->
+    <div class="main-header padded">Learned Today</div>
 
     {% if not result['today'] %}
-        <div>Should learn something new!</div>
+        <div class="left-padded">Should learn something new!</div>
     {% else %}
         <ul id="to_repeat_container" class="items">
         {% for item in result['today'] %}
@@ -27,13 +36,16 @@
         {% endfor %}
         </ul>
     {% endif %}
+    </div>
+  </div>
 
-
-<!--list to repeat today-->
-    <h2>Things to Repeat Today</h2>
+  <!--list to repeat today-->
+  <div class="grid-item-repeat card-background">
+    <div class="main-header padded">Things to Repeat Today
+    </div>
 
     {% if not result['before'] %}
-        <div>It seems there's nothing to repeat today... ^__^</div>
+        <div class="left-padded">It seems there's nothing to repeat today... ^__^</div>
     {% else %}
         <ul class="items">
         {% for item in result['before'] %}
@@ -53,10 +65,10 @@
 
 
 <!--show agenda for specific day-->
-    <h2>Agenda</h2>
-    <h3>Show things you should have repeated on particular day(s)</h3>
+    <div class="main-header padded">History
+    </div>
 
-      <form id="agenda_form" method="POST">
+      <form class="left-padded" id="agenda_form" method="POST">
 
         <div>
           <label id="agenda_start_date_input_label" for="agenda_start_date_input">Show things to repeat on </label>
@@ -82,10 +94,12 @@
 
       </form>
 
-    <div id="agenda_response_container">
-
+    <div id="agenda_response_container" class="left-padded">
     </div>
+  </div>
 
+<!--end of grid-container-->
+</div>
 {% endblock %}
 
 {% block footer_includes %}
