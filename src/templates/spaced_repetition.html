@@ -15,87 +15,97 @@
   <!--add what was learned-->
   <div class="grid-item-add">
     <div class="card-background">
-    <div class="main-header padded">Add what you've learned today</div>
+      <div class="main-header padded">
+        Add what you've learned today
+      </div>
 
-    <form class="left-padded" id="new_item_form" method="POST">
-      <input type="text" placeholder="description" name="description" required>
-      <input type="text" placeholder="tags" name="tags">
-      <button type="submit">Submit</button>
-    </form>
+      <form class="left-padded" id="new_item_form" method="POST">
+        <input type="text" placeholder="description" name="description" required>
+        <input type="text" placeholder="tags" name="tags">
+        <button type="submit">Submit</button>
+      </form>
 
 
-   <!--list learned today-->
-    <div class="main-header padded">Learned Today</div>
+     <!--list learned today-->
+      <div class="main-header padded">
+        Learned Today
+      </div>
 
-    {% if not result['today'] %}
-        <div class="left-padded">Should learn something new!</div>
-    {% else %}
+      {% if not result['today'] %}
+        <div class="left-padded">
+          Should learn something new!
+        </div>
+      {% else %}
         <ul id="to_repeat_container" class="items">
         {% for item in result['today'] %}
           {% include 'added_today_item.html' %}
         {% endfor %}
         </ul>
-    {% endif %}
+      {% endif %}
     </div>
   </div>
 
   <!--list to repeat today-->
   <div class="grid-item-repeat card-background">
-    <div class="main-header padded">Things to Repeat Today
+    <div class="main-header padded">
+      Things to Repeat Today
     </div>
 
     {% if not result['before'] %}
-        <div class="left-padded">It seems there's nothing to repeat today... ^__^</div>
+      <div class="left-padded">
+        It seems there's nothing to repeat today... ^__^
+      </div>
     {% else %}
-        <ul class="items">
-        {% for item in result['before'] %}
-          <li id="t_{{item.id}}" class="item {{'striked' if item.done }}">
-            <span>{{ item.repeat_item.description }}</span>
-            <b>{{ item.repeat_item.tags }}</b>
-            <span>(added {{item.added_days_ago}} days ago)</span>
-            <input type="checkbox"
-                   id="t_{{item.repeat_item.date_created}}"
-                   onchange="changeDoneStatus(this)"
-                   {% if item.done %} checked {% endif %} />
+      <ul class="items">
+      {% for item in result['before'] %}
+        <li id="t_{{item.id}}" class="item {{'striked' if item.done }}">
+          <span>{{ item.repeat_item.description }}</span>
+          <b>{{ item.repeat_item.tags }}</b>
+          <span>(added {{item.added_days_ago}} days ago)</span>
+          <input type="checkbox"
+                 id="t_{{item.repeat_item.date_created}}"
+                 onchange="changeDoneStatus(this)"
+                 {% if item.done %} checked {% endif %} />
 
-          </li>
-        {% endfor %}
-        </ul>
+        </li>
+      {% endfor %}
+      </ul>
     {% endif %}
 
 
 <!--show agenda for specific day-->
-    <div class="main-header padded">History
+    <div class="main-header padded">
+      History
     </div>
 
-      <form class="left-padded" id="agenda_form" method="POST">
+    <form class="left-padded" id="agenda_form" method="POST">
 
-        <div>
-          <label id="agenda_start_date_input_label" for="agenda_start_date_input">Show things to repeat on </label>
-          <input type="date" id="agenda_start_date_input" name="agenda_start_date_input" min="2018-04-01" max="2018-08-20" required>
+      <div>
+        <label id="agenda_start_date_input_label" for="agenda_start_date_input">Show things to repeat on </label>
+        <input type="date" id="agenda_start_date_input" name="agenda_start_date_input" min="2018-04-01" max="2018-08-20" required>
 
-          <span id="agenda_end_date_block" hidden>
-            <label for="agenda_end_date_input"> to </label>
-            <input type="date" id="agenda_end_date_input" name="agenda_end_date_input" min="2018-04-01" max="2018-08-20">
-            <span class="validity"></span>
-          </span>
-        </div>
+        <span id="agenda_end_date_block" hidden>
+          <label for="agenda_end_date_input"> to </label>
+          <input type="date" id="agenda_end_date_input" name="agenda_end_date_input" min="2018-04-01" max="2018-08-20">
+          <span class="validity"></span>
+        </span>
+      </div>
 
-        <div>
-          <input type="checkbox"
-                 id="agenda_is_dates_range"
-                 onchange="changeIsAgendaDatesRange(this)" />
-          <label for="agenda_is_dates_range">See agenda for all dates in range</label>
-        </div>
+      <div>
+        <input type="checkbox"
+               id="agenda_is_dates_range"
+               onchange="changeIsAgendaDatesRange(this)" />
+        <label for="agenda_is_dates_range">See agenda for all dates in range</label>
+      </div>
 
-        <div>
-          <button type="submit">Submit</button>
-        </div>
-
-      </form>
+      <div>
+        <button type="submit">Submit</button>
+      </div>
+    </form>
 
     <div id="agenda_response_container" class="left-padded">
     </div>
+  <!--end of to repeat item  -->
   </div>
 
 <!--end of grid-container-->
