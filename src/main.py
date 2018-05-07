@@ -17,7 +17,6 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
         config.DB_USER, config.DB_PASS, config.DB_HOST, config.DB_PORT, config.DB_NAME))
 app.config.from_pyfile('config.py', silent=True)
 
-
 from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy(app)
@@ -112,6 +111,10 @@ def root():
                                item={'repeat_item' : repeat_item})
 
     else:
+        log_item = LogItem(date.today(), request.access_route)
+        db.session.add(log_item)
+        db.session.commit()
+
         db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
 
         return render_template('spaced_repetition.html', result=process_repeats(db_result))
