@@ -40,6 +40,20 @@ class RepeatItem(db.Model):
         return json.dumps({'description': self.description})
 
 
+class LogItem(db.Model):
+    id = db.Column(BigInteger, primary_key=True)
+    timestamp = db.Column(db.DateTime, unique=False, nullable=False)
+    ip = db.Column(db.String, unique=False, nullable=False)
+
+    def __init__(self, timestamp, ip):
+        self.timestamp = timestamp
+        self.ip = ip
+
+    def __repr__(self):
+        return json.dumps({'timestamp': self.timestamp,
+                           'ip': self.ip})
+
+
 class DateRepeatItemLink(db.Model):
     id = db.Column(BigInteger, primary_key=True)
     date_to_repeat = db.Column(db.DateTime, unique=False, nullable=False)
