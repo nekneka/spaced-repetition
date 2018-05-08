@@ -22,23 +22,6 @@ from flask_sqlalchemy import SQLAlchemy
 db = SQLAlchemy(app)
 
 
-class RepeatItem(db.Model):
-    id = db.Column(BigInteger, primary_key=True)
-    date_created = db.Column(db.DateTime, unique=False, nullable=False)
-    description = db.Column(db.String, unique=False, nullable=False)
-    # TODO: move to separate table
-    tags = db.Column(db.String, unique=False, nullable=True)
-
-    def __init__(self, date_created, description, tags):
-        self.date_created = date_created
-        self.description = description
-        self.tags = tags
-
-    # not used, to return repr(db_results_list)
-    def __repr__(self):
-        return json.dumps({'description': self.description})
-
-
 class LogItem(db.Model):
     id = db.Column(BigInteger, primary_key=True)
     timestamp = db.Column(db.DateTime, unique=False, nullable=False)
@@ -51,6 +34,52 @@ class LogItem(db.Model):
     def __repr__(self):
         return json.dumps({'timestamp': self.timestamp,
                            'ip': self.ip})
+
+
+repeat_item_to_tag = db.Table('repeat_item_to_tag', db.Model.metadata,
+    db.Column('item_id', db.Integer, ForeignKey('repeat_item.id')),
+    db.Column('tag_id', db.Integer, ForeignKey('tag.id'))
+)
+
+
+class Tag(db.Model):
+    __tablename__ = 'tag'
+    id = db.Column(BigInteger, primary_key=True)
+    tag = db.Column(db.String, unique=True, nullable=False)
+    count = db.Column(db.Integer, unique=False, nullable=False)
+    items = relationship(
+        "RepeatItem",
+        secondary=repeat_item_to_tag,
+        back_populates="tags")
+
+    def __init__(self, tag, count):
+        self.tag = tag
+        self.count = count
+
+    def __repr__(self):
+        return json.dumps({'tag': self.tag,
+                           'count': self.count})
+
+
+class RepeatItem(db.Model):
+    __tablename__ = 'repeat_item'
+    id = db.Column(BigInteger, primary_key=True)
+    date_created = db.Column(db.DateTime, unique=False, nullable=False)
+    description = db.Column(db.String, unique=False, nullable=False)
+    # tags = db.Column(db.String, unique=False, nullable=True)
+    tags = relationship(
+        "Tag",
+        secondary=repeat_item_to_tag,
+        back_populates="items")
+
+    def __init__(self, date_created, description, tags):
+        self.date_created = date_created
+        self.description = description
+        self.tags = tags
+
+    # not used, to return repr(db_results_list)
+    def __repr__(self):
+        return json.dumps({'description': self.description})
 
 
 class DateRepeatItemLink(db.Model):
@@ -120,6 +149,7 @@ def root():
         return render_template('spaced_repetition.html', result=process_repeats(db_result))
 
 
+# it is actually a GET, but Form data is dropped on GET, so POST was used
 @app.route('/agenda', methods=['POST'])
 def get_agenda():
 
