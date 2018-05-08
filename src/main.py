@@ -128,7 +128,20 @@ def process_repeats(db_result):
 def root():
     if request.method == 'POST':
         item = request.form.to_dict(flat=True)
-        repeat_item = RepeatItem(date.today(), item['description'], item['tags'])
+        tags = []
+
+        for tag in item['tags'].split(" "):
+            old_tag = Tag.query.filter_by(tag=tag).first()
+            if not old_tag:
+                old_tag = Tag(tag, 1)
+                db.session.add(old_tag)
+            else:
+                old_tag.count = old_tag.count + 1
+
+            tags.append(old_tag)
+        db.session.flush()
+
+        repeat_item = RepeatItem(date.today(), item['description'], tags)
         db.session.add(repeat_item)
         db.session.flush()
 
@@ -137,7 +150,7 @@ def root():
             db.session.add(dateItemLink)
         db.session.commit()
         return render_template('added_today_item.html',
-                               item={'repeat_item' : repeat_item})
+                               item={'repeat_item': repeat_item})
 
     else:
         log_item = LogItem(date.today(), request.access_route)
