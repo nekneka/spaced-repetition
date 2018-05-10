@@ -2,12 +2,18 @@
     text-decoration: line-through;
 }
 
+html {
+font-family: 'Tinos', serif;
+/*font-family: 'Yrsa', serif;*/
+}
+
 /* background img */
 body {
     /* The image used */
     background-image: url("/space.jpg");
-    overflow-x: hidden;
     height: 100%;
+
+    overflow-x: hidden;
 
     /* Center and scale the image nicely */
     background-position: center;
@@ -59,6 +65,8 @@ body {
 .card-background {
     background-color: #FFFFFF;
     box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.5);
+    padding-bottom: 20px;
+    padding-right: 20px;
 }
 
 .grid-item-add {
@@ -78,12 +86,14 @@ body {
 }
 
 .main-header {
-    font-size: 1.5em;
+    font-size: 1.2em;
     font-weight: bold;
+    font-family: 'Istok+Web', serif;
 }
 
 .padded {
     padding: 15px;
+    padding-top: 30px;
 }
 
 .left-padded {
@@ -92,4 +102,59 @@ body {
 
 .items {
     margin: 0;
+}
+
+/* settings button styles */
+i {
+vertical-align:middle;
+}
+
+.header-button {
+	background-color:#ffffff;
+	border:1px solid #0b0038;
+	display:inline-block;
+	cursor:pointer;
+	color:#000000;
+	font-family:Arial;
+	padding:6px 24px;
+	text-decoration:none;
+}
+.header-button:hover {
+	background-color:#f6f6f6;
+}
+.header-button:active {
+	position:relative;
+	top:1px;
+}
+
+/* main orange buttons styles */
+.main-button {
+	-moz-box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	-webkit-box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	box-shadow:inset 0px 1px 0px 0px #fce2c1;
+	background-color:#fb9e25;
+	-moz-border-radius:6px;
+	-webkit-border-radius:6px;
+	border-radius:6px;
+	border-width:1px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Verdana;
+	font-weight:bold;
+	padding:6px 24px;
+	text-decoration:none;
+}
+.main-button:hover {
+	background-color:#ffc477;
+}
+.main-button:active {
+	position:relative;
+	top:1px;
+}
+
+
+.show-history {
+     float: right;
+     margin: 0;
 }

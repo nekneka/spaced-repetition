@@ -8,27 +8,28 @@
       Repetition is the key.
   </div>
 
-  <button class="grid-item-settings">
-    Settings
+  <button class="grid-item-settings header-button">
+    <i class="material-icons" >settings</i>
+    <span>Settings</span>
   </button>
 
   <!--add what was learned-->
   <div class="grid-item-add">
     <div class="card-background">
       <div class="main-header padded">
-        Add what you've learned today
+        What have you studied today?
       </div>
 
       <form class="left-padded" id="new_item_form" method="POST">
         <input type="text" placeholder="description" name="description" required>
         <input type="text" placeholder="tags" name="tags">
-        <button type="submit">Submit</button>
+        <button class="main-button" type="submit">Add Item</button>
       </form>
 
 
      <!--list learned today-->
       <div class="main-header padded">
-        Learned Today
+        Studied Today:
       </div>
 
       {% if not result['today'] %}
@@ -48,7 +49,7 @@
   <!--list to repeat today-->
   <div class="grid-item-repeat card-background">
     <div class="main-header padded">
-      Things to Repeat Today
+      To Repeat Today:
     </div>
 
     {% if not result['before'] %}
@@ -75,7 +76,7 @@
 
 <!--show agenda for specific day-->
     <div class="main-header padded">
-      History
+      Show history
     </div>
 
     <form class="left-padded" id="agenda_form" method="POST">
@@ -95,11 +96,11 @@
         <input type="checkbox"
                id="agenda_is_dates_range"
                onchange="changeIsAgendaDatesRange(this)" />
-        <label for="agenda_is_dates_range">See agenda for all dates in range</label>
+        <label for="agenda_is_dates_range">See history for all dates in range</label>
       </div>
 
       <div>
-        <button type="submit">Submit</button>
+        <button class="main-button show-history" type="submit">Show History</button>
       </div>
     </form>
 

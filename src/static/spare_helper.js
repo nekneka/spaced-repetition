@@ -1,4 +1,4 @@
-// add new item processing
+// add new item
 let new_item_form = document.getElementById("new_item_form");
 let to_repeat_container = document.getElementById("to_repeat_container");
 
@@ -23,7 +23,7 @@ new_item_form.addEventListener('submit', function(ev) {
 }, false);
 
 
-// done checkboxes processing
+// done checkboxes
 function changeDoneStatus(checkboxElem) {
   let item = checkboxElem.parentNode;
 
@@ -53,7 +53,7 @@ function changeDoneStatus(checkboxElem) {
 }
 
 
-// checkbox see agenda for range of dates processing
+// checkbox see agenda for range of dates
 function changeIsAgendaDatesRange(checkboxIsRange) {
   let end_date_elem = document.getElementById("agenda_end_date_block");
   let start_date_label_elem = document.getElementById("agenda_start_date_input_label");
@@ -69,7 +69,7 @@ function changeIsAgendaDatesRange(checkboxIsRange) {
 }
 
 
-// agenda request processing
+// agenda request
 // TODO: this smells
 let agenda_submit = document.getElementById("agenda_form");
 let agenda_response_container = document.getElementById("agenda_response_container");
