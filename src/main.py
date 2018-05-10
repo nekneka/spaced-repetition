@@ -141,7 +141,7 @@ def root():
             tags.append(old_tag)
         db.session.flush()
 
-        repeat_item = RepeatItem(date.today(), item['description'], tags)
+        repeat_item = RepeatItem(datetime.utcnow(), item['description'], tags)
         db.session.add(repeat_item)
         db.session.flush()
 
@@ -153,7 +153,7 @@ def root():
                                item={'repeat_item': repeat_item})
 
     else:
-        log_item = LogItem(date.today(), request.access_route)
+        log_item = LogItem(datetime.utcnow(), request.access_route)
         db.session.add(log_item)
         db.session.commit()
 
