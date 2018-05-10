@@ -1,0 +1,9 @@
+<a href="#" rel="{{ tag.count if tag.tag else 1 }}">
+  <span>
+    {% if tag.tag %}
+      {{tag.tag}}
+    {% else %}
+      no tags
+    {% endif %}
+  </span>
+</a>

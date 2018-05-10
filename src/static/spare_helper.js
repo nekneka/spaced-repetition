@@ -83,6 +83,7 @@ agenda_submit.addEventListener('submit', function(ev) {
   request.onload = function(oEvent) {
     if (request.status == 200) {
       agenda_response_container.innerHTML = request.response;
+      $('.tagcloud a').tagcloud();
     } else {
       console.log("Error!");
     }
@@ -90,4 +91,12 @@ agenda_submit.addEventListener('submit', function(ev) {
 
   request.send(data);
   ev.preventDefault();
+}, false);
+
+document.addEventListener('DOMContentLoaded', function(){
+    $.fn.tagcloud.defaults = {
+      size: {start: 10, end: 14, unit: 'px'},
+      color: {start: '#1c5866', end: '#661c49'}
+    };
+    $('.tagcloud a').tagcloud();
 }, false);

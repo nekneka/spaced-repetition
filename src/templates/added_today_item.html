@@ -1,4 +1,8 @@
 <li class="item">
   <span>{{ item.repeat_item.description }}</span>
-  <b>{{ item.repeat_item.tags }}</b>
+  <span class="tagcloud">
+    {% for tag in item.repeat_item.tags %}
+      {% include 'tag_item.html' %}
+    {% endfor %}
+  </span>
 </li>

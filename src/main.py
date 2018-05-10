@@ -66,7 +66,6 @@ class RepeatItem(db.Model):
     id = db.Column(BigInteger, primary_key=True)
     date_created = db.Column(db.DateTime, unique=False, nullable=False)
     description = db.Column(db.String, unique=False, nullable=False)
-    # tags = db.Column(db.String, unique=False, nullable=True)
     tags = relationship(
         "Tag",
         secondary=repeat_item_to_tag,
@@ -79,7 +78,8 @@ class RepeatItem(db.Model):
 
     # not used, to return repr(db_results_list)
     def __repr__(self):
-        return json.dumps({'description': self.description})
+        return json.dumps({'description': self.description,
+                           'tags': json.loads(repr(self.tags))})
 
 
 class DateRepeatItemLink(db.Model):
@@ -175,13 +175,13 @@ def get_agenda():
         items_to_repeat = DateRepeatItemLink.query\
             .filter(
                 DateRepeatItemLink.date_to_repeat >= agenda_dates['agenda_start_date_input'],
-                DateRepeatItemLink.date_to_repeat <= agenda_dates['agenda_end_date_input'], \
+                DateRepeatItemLink.date_to_repeat <= agenda_dates['agenda_end_date_input'],
                 not_(DateRepeatItemLink.added_days_ago == 0))\
             .all()
     else:
         items_to_repeat = DateRepeatItemLink.query\
             .filter(
-                DateRepeatItemLink.date_to_repeat == agenda_dates['agenda_start_date_input'], \
+                DateRepeatItemLink.date_to_repeat == agenda_dates['agenda_start_date_input'],
                 not_(DateRepeatItemLink.added_days_ago == 0))\
             .all()
 
