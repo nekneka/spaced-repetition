@@ -13,8 +13,8 @@
   </div>
   <ul class="items left-padded">
     {% for item in items %}
-      <li id="agenda_{{item.id}}" class="item {{'striked' if item.done }}">
-        <label>
+      <li id="a_{{item.id}}" class="item">
+        <label class="{{'striked' if item.done }}">
           <input
                type="checkbox"
                class="checkbox"

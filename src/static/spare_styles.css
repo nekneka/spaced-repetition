@@ -32,11 +32,6 @@ body {
     max-height: max-content;
 }
 
-.grid-item-repeat {
-    max-height: 90vh;
-    overflow-y: scroll;
-}
-
 .white-header {
     color: white;
     font-size: 2em;

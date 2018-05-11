@@ -29,7 +29,7 @@ new_item_form.addEventListener('submit', function(ev) {
 
 // done checkboxes
 function changeDoneStatus(checkboxElem) {
-  let item = checkboxElem.parentNode;
+  let item = checkboxElem.parentNode.parentNode;
 
   if (checkboxElem.checked) {
     item.classList.add('striked');

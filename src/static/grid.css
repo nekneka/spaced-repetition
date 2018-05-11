@@ -12,24 +12,29 @@
 }
 
 @media (min-width: 700px) {
-  .grid-container {
-    grid-template-columns: auto 300px 300px auto;
+    .grid-container {
+        grid-template-columns: auto 300px 300px auto;
 
-    grid-template-areas:
-      " .   header      settings       . "
-      " .   add-item    repeat-items   . "
-   }
-}
+        grid-template-areas:
+          " .   header      settings       . "
+          " .   add-item    repeat-items   . "
+        }
+    }
 
 
 @media (min-width: 1000px) {
-  .grid-container {
-    grid-template-columns: auto 500px 500px auto;
+    .grid-item-repeat {
+        max-height: 90vh;
+        overflow-y: scroll;
+    }
 
-    grid-template-areas:
-      " .   header      settings       . "
-      " .   add-item    repeat-items   . "
-   }
+    .grid-container {
+        grid-template-columns: auto 500px 500px auto;
+
+        grid-template-areas:
+          " .   header      settings       . "
+          " .   add-item    repeat-items   . "
+    }
 }
 
 .grid-item-header{

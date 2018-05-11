@@ -64,13 +64,15 @@
       <ul class="items left-padded">
       {% for item in result['before'] %}
         <li id="t_{{item.id}}" class="item">
-          <input type="checkbox"
-                 id="t_{{item.repeat_item.date_created}}"
-                 onchange="changeDoneStatus(this)"
-                 class="checkbox"
-                 {% if item.done %} checked {% endif %} />
+          <label class="{{'striked' if item.done }}">
+            <input type="checkbox"
+                   id="t_{{item.repeat_item.date_created}}"
+                   onchange="changeDoneStatus(this)"
+                   class="checkbox"
+                   {% if item.done %} checked {% endif %} />
 
-          <span class="{{'striked' if item.done }}">{{ item.repeat_item.description }}</span>
+            {{ item.repeat_item.description }}
+          </label>
 
           <div class="added_days_ago">
             (added {{item.added_days_ago}} days ago)
