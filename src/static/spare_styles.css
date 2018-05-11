@@ -9,16 +9,10 @@ font-family: 'Tinos', serif;
 
 /* background img */
 body {
-    /* The image used */
-    background-image: url("/space.jpg");
+    background-image: url("/celebration.png");
     height: 100%;
 
     overflow-x: hidden;
-
-    /* Center and scale the image nicely */
-    background-position: center;
-    background-repeat: repeat;
-    background-size: cover;
 }
 
 /* grid */
@@ -64,7 +58,11 @@ body {
 
 .card-background {
     background-color: #FFFFFF;
-    box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.5);
+    /*heavy shadow for dark bg
+     * saving old for light bg:
+     * box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.5);
+    */
+    box-shadow: 8px 8px 8px 8px rgba(9, 9, 9, 0.8);
     padding-bottom: 20px;
     padding-right: 20px;
 }
@@ -86,18 +84,18 @@ body {
 }
 
 .main-header {
-    font-size: 1.2em;
+    font-size: 1.4em;
     font-weight: bold;
     font-family: 'Istok+Web', serif;
 }
 
 .padded {
-    padding: 15px;
-    padding-top: 30px;
+    padding: 35px;
+    padding-bottom: 20px;
 }
 
 .left-padded {
-    padding-left: 20px;
+    padding-left: 45px;
 }
 
 .items {
@@ -160,6 +158,11 @@ vertical-align:middle;
     margin-bottom: 10px;
 }
 
+.add-item-button {
+    float: right;
+    margin: 10px;
+}
+
 .tagcloud a {
     text-decoration: none;
     color: white;
@@ -185,4 +188,8 @@ hr {
     height: 1px;
     border: 0;
     border-top: 1px solid #ccc;
+}
+
+.checkbox {
+    vertical-align: -2px;
 }

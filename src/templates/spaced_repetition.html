@@ -23,7 +23,7 @@
       <form class="left-padded" id="new_item_form" method="POST">
         <input type="text" placeholder="description" name="description" required>
         <input type="text" placeholder="tags" name="tags">
-        <button class="main-button" type="submit">Add Item</button>
+        <button class="main-button add-item-button" type="submit">Add Item</button>
       </form>
 
 
@@ -37,7 +37,7 @@
           Should learn something new!
         </div>
       {% else %}
-        <ul id="to_repeat_container" class="items">
+        <ul id="to_repeat_container" class="items left-padded">
         {% for item in result['today'] %}
           {% include 'added_today_item.html' %}
         {% endfor %}
@@ -57,12 +57,13 @@
         It seems there's nothing to repeat today... ^__^
       </div>
     {% else %}
-      <ul class="items">
+      <ul class="items left-padded">
       {% for item in result['before'] %}
         <li id="t_{{item.id}}" class="item {{'striked' if item.done }}">
           <input type="checkbox"
                  id="t_{{item.repeat_item.date_created}}"
                  onchange="changeDoneStatus(this)"
+                 class="checkbox"
                  {% if item.done %} checked {% endif %} />
 
           <span>{{ item.repeat_item.description }}</span>
@@ -105,6 +106,7 @@
 
       <div>
         <input type="checkbox"
+               class="checkbox"
                id="agenda_is_dates_range"
                onchange="changeIsAgendaDatesRange(this)" />
         <label for="agenda_is_dates_range">See history for all dates in range</label>
