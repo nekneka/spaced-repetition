@@ -4,13 +4,18 @@
 
 <div class="grid-container">
 
+  <button class="grid-item-what-is-it header-button">
+    <span>What is this?</span>
+    <span class="what-icon" ></span>
+  </button>
+
   <div class="grid-item-header white-header">
       Spaced Junk
   </div>
 
   <button class="grid-item-settings header-button">
-    <i class="material-icons" >settings</i>
     <span>Settings</span>
+    <i class="material-icons" >settings</i>
   </button>
 
   <!--add what was learned-->
@@ -32,7 +37,8 @@
         Studied Today:
       </div>
 
-        <div class="left-padded learn-something-new"
+        <div class="left-padded"
+             id="learn-something-new"
              {% if result.today %}
                 hidden
              {% endif %}>

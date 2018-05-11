@@ -4,10 +4,10 @@
     grid-row-gap: 10px;
 
     grid-template-areas:
-        "header"
-        "settings"
-        "add-item"
-        "repeat-items"
+        "header        header"
+        "what-is       settings"
+        "add-item      add-item"
+        "repeat-items  repeat-items"
         ;
 }
 
@@ -16,8 +16,8 @@
         grid-template-columns: auto 300px 300px auto;
 
         grid-template-areas:
-          " .   header      settings       . "
-          " .   add-item    repeat-items   . "
+          " what-is   header      settings       . "
+          " .         add-item    repeat-items   . "
         }
     }
 
@@ -32,9 +32,15 @@
         grid-template-columns: auto 500px 500px auto;
 
         grid-template-areas:
-          " .   header      settings       . "
-          " .   add-item    repeat-items   . "
+          " what-is   header      settings       . "
+          " .         add-item    repeat-items   . "
     }
+}
+
+.grid-item-what-is-it {
+    grid-area: what-is;
+    justify-self: start;
+    align-self: center;
 }
 
 .grid-item-header{
