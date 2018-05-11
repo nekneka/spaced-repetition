@@ -63,14 +63,14 @@
     {% else %}
       <ul class="items left-padded">
       {% for item in result['before'] %}
-        <li id="t_{{item.id}}" class="item {{'striked' if item.done }}">
+        <li id="t_{{item.id}}" class="item">
           <input type="checkbox"
                  id="t_{{item.repeat_item.date_created}}"
                  onchange="changeDoneStatus(this)"
                  class="checkbox"
                  {% if item.done %} checked {% endif %} />
 
-          <span>{{ item.repeat_item.description }}</span>
+          <span class="{{'striked' if item.done }}">{{ item.repeat_item.description }}</span>
 
           <div class="added_days_ago">
             (added {{item.added_days_ago}} days ago)
@@ -99,11 +99,22 @@
 
       <div>
         <label id="agenda_start_date_input_label" for="agenda_start_date_input">Show things to repeat on </label>
-        <input type="date" id="agenda_start_date_input" name="agenda_start_date_input" min="2018-04-01" max="2018-08-20" required>
+        <input
+            type="date"
+            id="agenda_start_date_input"
+            name="agenda_start_date_input"
+            min="2018-04-01"
+            max="2018-08-20"
+            required>
 
         <span id="agenda_end_date_block" hidden>
           <label for="agenda_end_date_input"> to </label>
-          <input type="date" id="agenda_end_date_input" name="agenda_end_date_input" min="2018-04-01" max="2018-08-20">
+          <input
+              type="date"
+              id="agenda_end_date_input"
+              name="agenda_end_date_input"
+              min="2018-04-01"
+              max="2018-08-20">
           <span class="validity"></span>
         </span>
       </div>
@@ -112,6 +123,7 @@
         <input type="checkbox"
                class="checkbox"
                id="agenda_is_dates_range"
+               name="is_range"
                onchange="changeIsAgendaDatesRange(this)" />
         <label for="agenda_is_dates_range">See history for all dates in range</label>
       </div>

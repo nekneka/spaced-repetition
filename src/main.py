@@ -171,7 +171,7 @@ def get_agenda():
     # TODO: check arguments
     # TODO: error handling
     # TODO: filter added_days_ago==0
-    if agenda_dates['agenda_end_date_input']:
+    if agenda_dates.get('is_range', False) and agenda_dates['agenda_end_date_input']:
         items_to_repeat = DateRepeatItemLink.query\
             .filter(
                 DateRepeatItemLink.date_to_repeat >= agenda_dates['agenda_start_date_input'],
