@@ -1,0 +1,58 @@
+.grid-container {
+    display: grid;
+    grid-column-gap: 20px;
+    grid-row-gap: 10px;
+
+    grid-template-areas:
+        "header"
+        "settings"
+        "add-item"
+        "repeat-items"
+        ;
+}
+
+@media (min-width: 700px) {
+  .grid-container {
+    grid-template-columns: auto 300px 300px auto;
+
+    grid-template-areas:
+      " .   header      settings       . "
+      " .   add-item    repeat-items   . "
+   }
+}
+
+
+@media (min-width: 1000px) {
+  .grid-container {
+    grid-template-columns: auto 500px 500px auto;
+
+    grid-template-areas:
+      " .   header      settings       . "
+      " .   add-item    repeat-items   . "
+   }
+}
+
+.grid-item-header{
+    grid-area: header;
+    justify-self: center;
+}
+
+.grid-item-settings {
+    grid-area: settings;
+    justify-self: end;
+    align-self: center;
+}
+
+.grid-item-add {
+    grid-area: add-item;
+}
+
+.grid-item-repeat {
+    grid-area: repeat-items;
+}
+
+/*.grid-item-agenda {
+    grid-column: repeat-column / span 1;
+    grid-row: search-row / span 1;
+}
+*/
