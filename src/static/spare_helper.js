@@ -1,6 +1,7 @@
 // add new item
 let new_item_form = document.getElementById("new_item_form");
 let to_repeat_container = document.getElementById("to_repeat_container");
+let learn_new = document.getElementById("learn-something-new");
 
 new_item_form.addEventListener('submit', function(ev) {
   let data = new FormData(new_item_form);
@@ -13,6 +14,9 @@ new_item_form.addEventListener('submit', function(ev) {
       let li_node = document.createElement("li");
       li_node.innerHTML = request.response;
       to_repeat_container.appendChild(li_node);
+      learn_new.hidden = true;
+      to_repeat_container.hidden = false;
+      $('.tagcloud a').tagcloud();
     } else {
       console.log("Error!");
     }

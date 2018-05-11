@@ -32,17 +32,21 @@
         Studied Today:
       </div>
 
-      {% if not result['today'] %}
-        <div class="left-padded">
+        <div class="left-padded learn-something-new"
+             {% if result.today %}
+                hidden
+             {% endif %}>
           Should learn something new!
         </div>
-      {% else %}
-        <ul id="to_repeat_container" class="items left-padded">
-        {% for item in result['today'] %}
+        <ul id="to_repeat_container"
+            class="items left-padded"
+             {% if not result.today %}
+                hidden
+             {% endif %}>
+        {% for item in result.today %}
           {% include 'added_today_item.html' %}
         {% endfor %}
         </ul>
-      {% endif %}
     </div>
   </div>
 
