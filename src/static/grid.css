@@ -1,3 +1,8 @@
+.grid-item-header{
+    grid-area: header;
+    justify-self: center;
+}
+
 .grid-container {
     display: grid;
     grid-column-gap: 20px;
@@ -19,7 +24,12 @@
           " what-is   header      settings       . "
           " .         add-item    repeat-items   . "
         }
+
+    .grid-item-header{
+        grid-column: 2 / span 2;
+
     }
+}
 
 
 @media (min-width: 1000px) {
@@ -35,17 +45,17 @@
           " what-is   header      settings       . "
           " .         add-item    repeat-items   . "
     }
+
+    .grid-item-header{
+        grid-column: 2 / span 2;
+
+    }
 }
 
 .grid-item-what-is-it {
     grid-area: what-is;
     justify-self: start;
     align-self: center;
-}
-
-.grid-item-header{
-    grid-area: header;
-    justify-self: center;
 }
 
 .grid-item-settings {

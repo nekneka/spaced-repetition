@@ -4,6 +4,7 @@ import json
 
 from flask import Flask, render_template, request, url_for, redirect
 from sqlalchemy.sql.elements import not_
+from sqlalchemy.sql.expression import desc
 from sqlalchemy.sql.schema import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.types import BigInteger
@@ -131,7 +132,7 @@ def root():
         item = request.form.to_dict(flat=True)
         tags = []
 
-        for tag in item['tags'].split(" "):
+        for tag in item['tags'].split(","):
             old_tag = Tag.query.filter_by(tag=tag).first()
             if not old_tag:
                 old_tag = Tag(tag, 1)
@@ -159,8 +160,11 @@ def root():
         db.session.commit()
 
         db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
+        result = process_repeats(db_result)
+        tags = Tag.query.order_by(desc('count')).limit(15).all()
+        result['tags'] = tags
 
-        return render_template('spaced_repetition.html', result=process_repeats(db_result))
+        return render_template('spaced_repetition.html', result=result)
 
 
 # it is actually a GET, but Form data is dropped on GET, so POST was used

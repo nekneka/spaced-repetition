@@ -2,11 +2,19 @@
 let new_item_form = document.getElementById("new_item_form");
 let to_repeat_container = document.getElementById("to_repeat_container");
 let learn_new = document.getElementById("learn-something-new");
+let added_tags = document.getElementById("added_tags");
+let tagcloud = document.getElementById('tagcloud');
 
 new_item_form.addEventListener('submit', function(ev) {
   let data = new FormData(new_item_form);
-  let request = new XMLHttpRequest();
 
+  let tags = [];
+  for (let item of added_tags.children) {
+    tags.push(item.text.trim());
+  }
+  data.append('tags', tags);
+
+  let request = new XMLHttpRequest();
   request.open("POST", "/", true);
 
   request.onload = function(oEvent) {
@@ -16,7 +24,7 @@ new_item_form.addEventListener('submit', function(ev) {
       to_repeat_container.appendChild(li_node);
       learn_new.hidden = true;
       to_repeat_container.hidden = false;
-      $('.tagcloud a').tagcloud();
+      $('.tagline a').tagcloud();
     } else {
       console.log("Error!");
     }
@@ -87,7 +95,7 @@ agenda_submit.addEventListener('submit', function(ev) {
   request.onload = function(oEvent) {
     if (request.status == 200) {
       agenda_response_container.innerHTML = request.response;
-      $('.tagcloud a').tagcloud();
+      $('.tagline a').tagcloud();
     } else {
       console.log("Error!");
     }
@@ -97,10 +105,34 @@ agenda_submit.addEventListener('submit', function(ev) {
   ev.preventDefault();
 }, false);
 
+function removeTag(event) {
+  event.preventDefault();
+  let tag = event.currentTarget;
+  tag.onclick = addTag;
+  added_tags.removeChild(tag)
+  tagcloud.appendChild(tag);
+}
+
+function addTag(event) {
+  event.preventDefault();
+  let tag = event.currentTarget;
+  tag.onclick = removeTag;
+  tagcloud.removeChild(tag)
+  added_tags.appendChild(tag);
+  $('.tagline').tagcloud();
+}
+
 document.addEventListener('DOMContentLoaded', function(){
     $.fn.tagcloud.defaults = {
       size: {start: 10, end: 14, unit: 'px'},
       color: {start: '#1c5866', end: '#661c49'}
     };
-    $('.tagcloud a').tagcloud();
+    $('.tagline a').tagcloud();
+    // specifically sized font for the cloud of tags
+    $('.tagcloud a').tagcloud({size: {start: 14, end: 20, unit: 'px'}});
+
+    let cloudTags = tagcloud.children;
+    for (var i = 0; i < cloudTags.length; i++) {
+        cloudTags[i].onclick = addTag;
+    }
 }, false);

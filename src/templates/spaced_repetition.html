@@ -15,7 +15,7 @@
 
   <button class="grid-item-settings header-button">
     <span>Settings</span>
-    <i class="material-icons" >settings</i>
+    <i class="material-icons">settings</i>
   </button>
 
   <!--add what was learned-->
@@ -26,11 +26,27 @@
       </div>
 
       <form class="left-padded" id="new_item_form" method="POST">
-        <input type="text" placeholder="description" name="description" required>
-        <input type="text" placeholder="tags" name="tags">
+        <input type="text" placeholder="description" class="add_item_input" name="description" required>
+        <div id="added_tags" class="tags tagline"></div>
         <button class="main-button add-item-button" type="submit">Add Item</button>
       </form>
 
+      <hr class="tagcloud_divider" align="center"/>
+
+      <div class="left-padded">
+        Choose tags for new item:
+      </div>
+
+      <input
+          type="text"
+          placeholder="Find tag"
+          id="tags_search">
+
+      <div id="tagcloud" class="tags tagcloud left-padded">
+        {% for tag in result.tags %}
+          {% include 'tag_item.html' %}
+        {% endfor %}
+      </div>
 
      <!--list learned today-->
       <div class="main-header padded">
@@ -84,7 +100,7 @@
             (added {{item.added_days_ago}} days ago)
           </div>
 
-          <div class="tagcloud">
+          <div class="tags tagline">
             {% for tag in item.repeat_item.tags %}
               {% include 'tag_item.html' %}
             {% endfor %}

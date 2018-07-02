@@ -25,7 +25,7 @@ body {
     */
     box-shadow: 8px 8px 8px 8px rgba(9, 9, 9, 0.8);
     padding-bottom: 20px;
-    padding-right: 20px;
+    padding-right: 40px;
 }
 
 .grid-item-add {
@@ -120,14 +120,38 @@ vertical-align:middle;
     margin: 10px;
 }
 
-.tagcloud a {
+.add_item_input {
+    width: 90%;
+}
+
+.tags a {
     text-decoration: none;
     color: white;
     display: inline-block;
     padding: 3px;
     margin: 0 3px 3px 0;
-    border-radius: 3px;
+    border-radius: 2px;
     font-family: 'Roboto Condensed';
+}
+
+.tagcloud {
+    margin: 10px;
+}
+
+#tags_search {
+    float: right;
+    width: 25%;
+    margin: 10px;
+}
+
+.tagcloud_divider {
+    margin: 10px 0 20px 20px;
+}
+
+#new_item_form {
+    display: inline-block;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 .items {
