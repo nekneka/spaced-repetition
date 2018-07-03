@@ -9,13 +9,19 @@ new_item_form.addEventListener('submit', function(ev) {
   let data = new FormData(new_item_form);
 
   let tags = [];
-  for (let item of added_tags.children) {
-    tags.push(item.text.trim());
+  for (let tag of added_tags.children) {
+    tags.push(tag.text.trim());
   }
   data.append('tags', tags);
 
   let request = new XMLHttpRequest();
   request.open("POST", "/", true);
+
+  // TODO: move this to success while adding error handling
+  while (added_tags.firstChild) {
+    removeTag(added_tags.firstChild);
+  }
+  new_item_form.reset();
 
   request.onload = function(oEvent) {
     if (request.status == 200) {
@@ -105,11 +111,15 @@ agenda_submit.addEventListener('submit', function(ev) {
   ev.preventDefault();
 }, false);
 
-function removeTag(event) {
+function removeTagHandler(event) {
   event.preventDefault();
   let tag = event.currentTarget;
+  removeTag(tag);
+}
+
+function removeTag(tag) {
   tag.onclick = addTag;
-  added_tags.removeChild(tag)
+  added_tags.removeChild(tag);
   tagcloud.appendChild(tag);
 }
 
