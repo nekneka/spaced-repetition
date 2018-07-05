@@ -132,7 +132,7 @@ def root():
         item = request.form.to_dict(flat=True)
         tags = []
 
-        for tag in item['tags'].split(","):
+        for tag in set(item['tags'].split(",")):
             old_tag = Tag.query.filter_by(tag=tag).first()
             if not old_tag:
                 old_tag = Tag(tag, 1)
@@ -141,6 +141,7 @@ def root():
                 old_tag.count = old_tag.count + 1
 
             tags.append(old_tag)
+
         db.session.flush()
 
         repeat_item = RepeatItem(datetime.utcnow(), item['description'], tags)

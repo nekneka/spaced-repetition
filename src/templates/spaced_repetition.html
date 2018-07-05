@@ -27,7 +27,7 @@
 
       <form class="left-padded" id="new_item_form" method="POST">
         <input type="text" placeholder="description" class="add_item_input" name="description" required>
-        <div id="added_tags" class="tags tagline"></div>
+        <div id="added_tags" class="tags tagcloud"></div>
         <button class="main-button add-item-button" type="submit">Add Item</button>
       </form>
 
@@ -39,8 +39,10 @@
 
       <input
           type="text"
-          placeholder="Find tag"
-          id="tags_search">
+          placeholder="Add/Find tag"
+          id="tags_search"
+          maxlength="500"
+      >
 
       <div id="tagcloud" class="tags tagcloud left-padded">
         {% for tag in result.tags %}
