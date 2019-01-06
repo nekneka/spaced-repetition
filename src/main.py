@@ -2,111 +2,50 @@ import os
 from datetime import date, timedelta, datetime
 import json
 
-from flask import Flask, render_template, request, url_for, redirect
+from flask import Flask, render_template, request, redirect
+from flask_mail import Mail
+from flask_security import logout_user
 from sqlalchemy.sql.elements import not_
 from sqlalchemy.sql.expression import desc
-from sqlalchemy.sql.schema import ForeignKey
-from sqlalchemy.orm import relationship
-from sqlalchemy.types import BigInteger
-from src import config
+
+from flask_security import Security, login_required, SQLAlchemySessionUserDatastore
+
+from src.db.database import db_session, init_db
+from src.models.login import Login, Register
+from src.models.users import User, Role
+from src.models.entries import LogItem, DateRepeatItemLink, RepeatItem, Tag
+
+DAY_REPEATS = [0, 1, 8, 16, 35, 70]
 
 
 app = Flask(__name__, static_url_path='')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', None)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get(
-    'DATABASE_URL', 'postgresql://{}:{}@{}:{}/{}'.format(
-        config.DB_USER, config.DB_PASS, config.DB_HOST, config.DB_PORT, config.DB_NAME))
+app.config['SECURITY_PASSWORD_SALT'] = os.environ.get('SECURITY_PASSWORD_SALT', None)
 app.config.from_pyfile('config.py', silent=True)
+app.config['SECURITY_REGISTERABLE'] = True
+app.config['SEND_REGISTER_EMAIL'] = False
+app.config['MAIL_SUPPRESS_SEND'] = True
+app.config['SECURITY_USER_IDENTITY_ATTRIBUTES'] = ('username', 'email')
 
-from flask_sqlalchemy import SQLAlchemy
-
-db = SQLAlchemy(app)
-
-
-class LogItem(db.Model):
-    id = db.Column(BigInteger, primary_key=True)
-    timestamp = db.Column(db.DateTime, unique=False, nullable=False)
-    ip = db.Column(db.String, unique=False, nullable=False)
-    description = db.Column(db.String, unique=False, nullable=True)
-
-    def __init__(self, timestamp, ip):
-        self.timestamp = timestamp
-        self.ip = ip
-
-    def __repr__(self):
-        return json.dumps({'timestamp': self.timestamp,
-                           'ip': self.ip})
+# TODO: email confirmation
+mail = Mail()
+mail.init_app(app)
 
 
-repeat_item_to_tag = db.Table('repeat_item_to_tag', db.Model.metadata,
-    db.Column('item_id', db.Integer, ForeignKey('repeat_item.id')),
-    db.Column('tag_id', db.Integer, ForeignKey('tag.id'))
-)
+# Setup Flask-Security
+user_datastore = SQLAlchemySessionUserDatastore(db_session, User, Role)
+security = Security(app, user_datastore,
+                    login_form=Login,
+                    register_form=Register)
+
+init_db()
 
 
-class Tag(db.Model):
-    __tablename__ = 'tag'
-    id = db.Column(BigInteger, primary_key=True)
-    tag = db.Column(db.String, unique=True, nullable=False)
-    count = db.Column(db.Integer, unique=False, nullable=False)
-    items = relationship(
-        "RepeatItem",
-        secondary=repeat_item_to_tag,
-        back_populates="tags")
-
-    def __init__(self, tag, count):
-        self.tag = tag
-        self.count = count
-
-    def __repr__(self):
-        return json.dumps({'tag': self.tag,
-                           'count': self.count})
-
-
-class RepeatItem(db.Model):
-    __tablename__ = 'repeat_item'
-    id = db.Column(BigInteger, primary_key=True)
-    date_created = db.Column(db.DateTime, unique=False, nullable=False)
-    description = db.Column(db.String, unique=False, nullable=False)
-    tags = relationship(
-        "Tag",
-        secondary=repeat_item_to_tag,
-        back_populates="items")
-
-    def __init__(self, date_created, description, tags):
-        self.date_created = date_created
-        self.description = description
-        self.tags = tags
-
-    # not used, to return repr(db_results_list)
-    def __repr__(self):
-        return json.dumps({'description': self.description,
-                           'tags': json.loads(repr(self.tags))})
-
-
-class DateRepeatItemLink(db.Model):
-    id = db.Column(BigInteger, primary_key=True)
-    date_to_repeat = db.Column(db.DateTime, unique=False, nullable=False)
-    repeat_item_id = db.Column(BigInteger, ForeignKey('repeat_item.id'))
-    repeat_item = relationship("RepeatItem")
-
-    # TODO probably don't need to store it here - can just calculate each time from Item Created date
-    added_days_ago = db.Column(db.Integer, unique=False, nullable=False)
-    done = db.Column(db.Boolean, unique=False, nullable=False)
-
-    def __init__(self, date_to_repeat, repeat_item_id, added_days_ago):
-        self.date_to_repeat = date_to_repeat
-        self.repeat_item_id = repeat_item_id
-        self.added_days_ago = added_days_ago
-        self.done = False if added_days_ago != 0 else True
-
-    # not used, to return repr(db_results_list)
-    def __repr__(self):
-        return json.dumps({'date_to_repeat': self.date_to_repeat.isoformat(),
-                           'repeat_item': json.loads(repr(self.repeat_item))})
-
-
-DAY_REPEATS = [0, 1, 8, 16, 35, 70]
+@app.route("/logout")
+@login_required
+def logout():
+    logout_user()
+    return redirect("/")
 
 
 def add_days(days):
@@ -127,6 +66,7 @@ def process_repeats(db_result):
 
 
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def root():
     if request.method == 'POST':
         item = request.form.to_dict(flat=True)
@@ -136,29 +76,30 @@ def root():
             old_tag = Tag.query.filter_by(tag=tag).first()
             if not old_tag:
                 old_tag = Tag(tag, 1)
-                db.session.add(old_tag)
+                db_session.add(old_tag)
             else:
                 old_tag.count = old_tag.count + 1
 
             tags.append(old_tag)
 
-        db.session.flush()
+        db_session.flush()
 
         repeat_item = RepeatItem(datetime.utcnow(), item['description'], tags)
-        db.session.add(repeat_item)
-        db.session.flush()
+        db_session.add(repeat_item)
+        db_session.flush()
 
         for interval in DAY_REPEATS:
             dateItemLink = DateRepeatItemLink(add_days(interval), repeat_item.id, interval)
-            db.session.add(dateItemLink)
-        db.session.commit()
+            db_session.add(dateItemLink)
+        db_session.commit()
         return render_template('added_today_item.html',
                                item={'repeat_item': repeat_item})
 
     else:
-        log_item = LogItem(datetime.utcnow(), request.access_route)
-        db.session.add(log_item)
-        db.session.commit()
+        print("req ac r" + str(request.access_route))
+        log_item = LogItem(timestamp=datetime.utcnow(), ip=request.access_route[0])
+        db_session.add(log_item)
+        db_session.flush()
 
         db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
         result = process_repeats(db_result)
@@ -202,10 +143,10 @@ def change_done():
     # TODO: check input & handle errors
 
     update_data = json.loads(request.data)
-    link = db.session.query(DateRepeatItemLink).get(update_data['parent_id'])
+    link = db_session.query(DateRepeatItemLink).get(update_data['parent_id'])
     link.done = update_data['done']
-    db.session.add(link)
-    db.session.commit()
+    db_session.add(link)
+    db_session.commit()
 
     return 'ok'
 

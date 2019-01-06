@@ -13,8 +13,16 @@
       Spaced Junk
   </div>
 
-  <button class="grid-item-settings header-button">
-    <span>Settings</span>
+  <!--<button class="grid-item-settings header-button">-->
+    <!--<span>Settings</span>-->
+    <!--<i class="material-icons">settings</i>-->
+  <!--</button>-->
+
+  <button class="grid-item-settings header-button"
+          type="button"
+          onclick="location.href='/logout'"
+  >
+    <span id="logout">Logout</span>
     <i class="material-icons">settings</i>
   </button>
 
@@ -130,7 +138,7 @@
             id="agenda_start_date_input"
             name="agenda_start_date_input"
             min="2018-04-01"
-            max="2018-08-20"
+            max="2020-08-20"
             required>
 
         <span id="agenda_end_date_block" hidden>
@@ -140,7 +148,7 @@
               id="agenda_end_date_input"
               name="agenda_end_date_input"
               min="2018-04-01"
-              max="2018-08-20">
+              max="2020-08-20">
           <span class="validity"></span>
         </span>
       </div>
