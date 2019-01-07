@@ -4,7 +4,7 @@ import json
 
 from flask import Flask, render_template, request, redirect
 from flask_mail import Mail
-from flask_security import logout_user
+from flask_security import logout_user, current_user
 from sqlalchemy.sql.elements import not_
 from sqlalchemy.sql.expression import desc
 
@@ -73,9 +73,9 @@ def root():
         tags = []
 
         for tag in set(item['tags'].split(",")):
-            old_tag = Tag.query.filter_by(tag=tag).first()
+            old_tag = Tag.query.filter(Tag.tag == tag, Tag.user_id == current_user.id).first()
             if not old_tag:
-                old_tag = Tag(tag, 1)
+                old_tag = Tag(tag, 1, current_user.id)
                 db_session.add(old_tag)
             else:
                 old_tag.count = old_tag.count + 1
@@ -84,7 +84,7 @@ def root():
 
         db_session.flush()
 
-        repeat_item = RepeatItem(datetime.utcnow(), item['description'], tags)
+        repeat_item = RepeatItem(datetime.utcnow(), item['description'], tags, current_user.id)
         db_session.add(repeat_item)
         db_session.flush()
 
@@ -101,9 +101,19 @@ def root():
         db_session.add(log_item)
         db_session.flush()
 
-        db_result = DateRepeatItemLink.query.filter_by(date_to_repeat=date.today()).all()
+        db_result = db_session\
+            .query(DateRepeatItemLink)\
+            .join(RepeatItem)\
+            .filter(DateRepeatItemLink.date_to_repeat==date.today(),
+                    RepeatItem.user_id == current_user.id)\
+            .all()
+
         result = process_repeats(db_result)
-        tags = Tag.query.order_by(desc('count')).limit(15).all()
+        tags = Tag.query\
+            .filter_by(user_id=current_user.id)\
+            .order_by(desc('count'))\
+            .limit(15)\
+            .all()
         result['tags'] = tags
 
         return render_template('spaced_repetition.html', result=result)
@@ -111,6 +121,7 @@ def root():
 
 # it is actually a GET, but Form data is dropped on GET, so POST was used
 @app.route('/agenda', methods=['POST'])
+@login_required
 def get_agenda():
 
     agenda_dates = request.form
@@ -119,17 +130,27 @@ def get_agenda():
     # TODO: error handling
     # TODO: filter added_days_ago==0
     if agenda_dates.get('is_range', False) and agenda_dates['agenda_end_date_input']:
-        items_to_repeat = DateRepeatItemLink.query\
+
+        items_to_repeat = db_session\
+            .query(DateRepeatItemLink)\
+            .join(RepeatItem)\
             .filter(
+                RepeatItem.user_id == current_user.id,
                 DateRepeatItemLink.date_to_repeat >= agenda_dates['agenda_start_date_input'],
                 DateRepeatItemLink.date_to_repeat <= agenda_dates['agenda_end_date_input'],
-                not_(DateRepeatItemLink.added_days_ago == 0))\
+                not_(DateRepeatItemLink.added_days_ago == 0)
+            )\
             .all()
+
     else:
-        items_to_repeat = DateRepeatItemLink.query\
+        items_to_repeat = db_session\
+            .query(DateRepeatItemLink)\
+            .join(RepeatItem)\
             .filter(
+                RepeatItem.user_id == current_user.id,
                 DateRepeatItemLink.date_to_repeat == agenda_dates['agenda_start_date_input'],
-                not_(DateRepeatItemLink.added_days_ago == 0))\
+                not_(DateRepeatItemLink.added_days_ago == 0)
+            )\
             .all()
 
     return render_template('agenda_response.html',
@@ -139,12 +160,20 @@ def get_agenda():
 
 
 @app.route('/api/item_done_change', methods=['POST'])
+@login_required
 def change_done():
     # TODO: check input & handle errors
 
     update_data = json.loads(request.data)
-    link = db_session.query(DateRepeatItemLink).get(update_data['parent_id'])
+
+    link = db_session\
+        .query(DateRepeatItemLink) \
+        .join(RepeatItem) \
+        .filter(RepeatItem.user_id == current_user.id,
+                DateRepeatItemLink.id == update_data['parent_id'])\
+        .one()
     link.done = update_data['done']
+
     db_session.add(link)
     db_session.commit()
 

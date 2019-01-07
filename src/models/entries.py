@@ -1,6 +1,6 @@
 import json
 from sqlalchemy import ForeignKey, Column, Boolean, Integer, DateTime, String, Table
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, backref
 from sqlalchemy.types import BigInteger
 from ..db.database import Base
 
@@ -30,40 +30,24 @@ repeat_item_to_tag = Table('repeat_item_to_tag', Base.metadata,
 class Tag(Base):
     __tablename__ = 'tag'
     id = Column(BigInteger, primary_key=True, autoincrement=True)
-    tag = Column(String, unique=True, nullable=False)
+    tag = Column(String, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
     count = Column(Integer, unique=False, nullable=False)
     items = relationship(
         "RepeatItem",
         secondary=repeat_item_to_tag,
         back_populates="tags")
 
-    def __init__(self, tag, count):
+    def __init__(self, tag, count, user_id):
         self.tag = tag
         self.count = count
+        self.user_id = user_id
 
     def __repr__(self):
         return json.dumps({'tag': self.tag,
-                           'count': self.count})
-
-
-class RepeatItem(Base):
-    __tablename__ = 'repeat_item'
-    id = Column(BigInteger, primary_key=True)
-    date_created = Column(DateTime, unique=False, nullable=False)
-    description = Column(String, unique=False, nullable=False)
-    tags = relationship(
-        "Tag",
-        secondary=repeat_item_to_tag,
-        back_populates="items")
-
-    def __init__(self, date_created, description, tags):
-        self.date_created = date_created
-        self.description = description
-        self.tags = tags
-
-    def __repr__(self):
-        return json.dumps({'description': self.description,
-                           'tags': json.loads(repr(self.tags))})
+                           'count': self.count,
+                           'user_id': json.loads(repr(self.user_id))
+                           })
 
 
 class DateRepeatItemLink(Base):
@@ -71,7 +55,6 @@ class DateRepeatItemLink(Base):
     id = Column(BigInteger, primary_key=True)
     date_to_repeat = Column(DateTime, unique=False, nullable=False)
     repeat_item_id = Column(BigInteger, ForeignKey('repeat_item.id'))
-    repeat_item = relationship("RepeatItem")
 
     # TODO probably don't need to store it here - can just calculate each time from Item Created date
     added_days_ago = Column(Integer, unique=False, nullable=False)
@@ -86,4 +69,30 @@ class DateRepeatItemLink(Base):
     def __repr__(self):
         return json.dumps({'date_to_repeat': self.date_to_repeat.isoformat(),
                            'repeat_item': json.loads(repr(self.repeat_item))})
+
+
+class RepeatItem(Base):
+    __tablename__ = 'repeat_item'
+    id = Column(BigInteger, primary_key=True)
+    user_id = Column(Integer, ForeignKey('users.id'))
+    date_created = Column(DateTime, unique=False, nullable=False)
+    description = Column(String, unique=False, nullable=False)
+    tags = relationship(
+        "Tag",
+        secondary=repeat_item_to_tag,
+        back_populates="items")
+    date_repeat_item_links = relationship(DateRepeatItemLink,
+                               backref="repeat_item")
+
+    def __init__(self, date_created, description, tags, user_id):
+        self.date_created = date_created
+        self.description = description
+        self.tags = tags
+        self.user_id = user_id
+
+    def __repr__(self):
+        return json.dumps({'description': self.description,
+                           'user_id': json.loads(repr(self.user_id)),
+                           'tags': json.loads(repr(self.tags))})
+
 

@@ -1,3 +1,5 @@
+import json
+
 from ..db.database import Base
 from flask_security import UserMixin, RoleMixin
 from sqlalchemy.orm import relationship, backref
@@ -34,3 +36,8 @@ class User(Base, UserMixin):
     confirmed_at = Column(DateTime())
     roles = relationship('Role', secondary='roles_users',
                          backref=backref('users', lazy='dynamic'))
+
+    def __repr__(self):
+        return json.dumps({'id': self.id,
+                           'email': self.email
+                           })
